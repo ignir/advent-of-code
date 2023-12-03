@@ -58,7 +58,7 @@ def part1():
 
 
 def part2():
-    lines = list(iter_cleaned_lines(os.path.join(ROOT_DIR, "input.txt")))
+    lines = iter_cleaned_lines(os.path.join(ROOT_DIR, "input.txt"))
     print(f"Correct sum of calibration values is {sum(map(extract_number, lines))}")
 
 

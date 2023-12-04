@@ -8,12 +8,29 @@ sys.path.append(os.path.abspath(os.path.join(ROOT_DIR, "..")))
 from common import iter_cleaned_lines
 
 
-def extract_raw_number(line):
-    return int(leftmost_digit(line) + rightmost_digit(line))
+lines = list(iter_cleaned_lines(os.path.join(ROOT_DIR, "input.txt")))
 
 
-def extract_number(line):
-    return int(leftmost_digit(left_parse_digits(line)) + rightmost_digit(right_parse_digits(line)))
+def part1():
+    def extract_raw_number(line):
+        return int(first_digit(line) + first_digit(reversed(line)))
+
+    calibration_values_sum = sum(map(extract_raw_number, lines))
+    print(f"Sum of calibration values is {calibration_values_sum}")
+    return calibration_values_sum
+
+
+def part2():
+    WORDS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+    WORDS_TO_DIGITS = {word: str(digit) for digit, word in enumerate(WORDS, 1)}
+    REVERSED_WORDS_TO_DIGITS = {word[::-1]: str(digit) for digit, word in enumerate(WORDS, 1)}
+
+    def extract_number(line):
+        return int(first_digit(parse_digits(line, WORDS_TO_DIGITS)) + first_digit(parse_digits(line[::-1], REVERSED_WORDS_TO_DIGITS)))
+
+    calibration_values_sum = sum(map(extract_number, lines))
+    print(f"Correct sum of calibration values is {calibration_values_sum}")
+    return calibration_values_sum
 
 
 def first_digit(line):
@@ -22,45 +39,15 @@ def first_digit(line):
             return c
 
 
-def leftmost_digit(line):
-    return first_digit(line)
-
-
-def rightmost_digit(line):
-    return first_digit(reversed(line))
-
-
-WORDS = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-WORDS_TO_DIGITS = {word: str(digit) for digit, word in enumerate(WORDS, 1)}
-
-
-def left_parse_digits(line):
+def parse_digits(line, words_to_digits):
     if line == "":
         return line
-    for word in WORDS:
+    for word, digit in words_to_digits.items():
         if line[:len(word)] == word:
-            return WORDS_TO_DIGITS[word] + left_parse_digits(line[len(word):])
-    return line[0] + left_parse_digits(line[1:])
+            return digit + parse_digits(line[len(word):], words_to_digits)
+    return line[0] + parse_digits(line[1:], words_to_digits)
 
 
-def right_parse_digits(line):
-    if line == "":
-        return line
-    for word in WORDS:
-        if line[-len(word):] == word:
-            return right_parse_digits(line[:-len(word)]) + WORDS_TO_DIGITS[word]
-    return right_parse_digits(line[:-1]) + line[-1]
-
-
-def part1():
-    lines = iter_cleaned_lines(os.path.join(ROOT_DIR, "input.txt"))
-    print(f"Sum of calibration values is {sum(map(extract_raw_number, lines))}")
-
-
-def part2():
-    lines = iter_cleaned_lines(os.path.join(ROOT_DIR, "input.txt"))
-    print(f"Correct sum of calibration values is {sum(map(extract_number, lines))}")
-
-
-part1()
-part2()
+if __name__ == "__main__":
+    part1()
+    part2()

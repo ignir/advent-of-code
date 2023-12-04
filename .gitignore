@@ -1,0 +1,14 @@
+**/*.log
+**/.DS_Store
+**/.Trashes
+**/*.code-workspace
+**/*.idea
+*.pyc
+__pycache__/
+*.swp
+**/*.env
+venv/
+.pytest_cache/
+.coverage
+junit.xml
+.vscode
